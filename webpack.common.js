@@ -124,9 +124,6 @@ module.exports = (env) => {
     ],
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
-      alias: {
-        path: require.resolve("path-browserify")
-      },
       plugins: [
         new TsconfigPathsPlugin({
           configFile: path.resolve(__dirname, './tsconfig.json'),

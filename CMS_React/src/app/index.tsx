@@ -4,12 +4,19 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLayout } from '@app/AppLayout/AppLayout';
 import { AppRoutes } from '@app/routes';
 import '@app/app.css';
+import TemplateProvider from './context/TemplateProvider';
+import AuthProvider from './context/AuthProvider';
+
 
 const App: React.FunctionComponent = () => (
   <Router>
-    <AppLayout>
-      <AppRoutes />
-    </AppLayout>
+    <AuthProvider>
+      <TemplateProvider>
+        <AppLayout>
+          <AppRoutes />
+        </AppLayout>
+      </TemplateProvider>
+    </AuthProvider>
   </Router>
 );
 

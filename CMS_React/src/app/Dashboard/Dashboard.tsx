@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Badge, Bullseye, Button, Card, CardBody, CardHeader, CardTitle, Dropdown, DropdownItem, DropdownList, EmptyState, EmptyStateActions, EmptyStateFooter, EmptyStateHeader, EmptyStateIcon, EmptyStateVariant, Gallery, MenuToggle, MenuToggleCheckbox, MenuToggleElement, OverflowMenu, OverflowMenuControl, OverflowMenuDropdownItem, OverflowMenuItem, PageSection, PageSectionVariants, Pagination, Select, SelectList, SelectOption, Text, TextContent, Title, Toolbar, ToolbarContent, ToolbarFilter, ToolbarItem } from '@patternfly/react-core';
+import { Badge, Bullseye, Button, Card, CardBody, CardHeader, CardTitle, Dropdown, DropdownItem, DropdownList, EmptyState, EmptyStateActions, EmptyStateFooter, EmptyStateHeader, EmptyStateIcon, EmptyStateVariant, Gallery, MenuToggle, MenuToggleCheckbox, MenuToggleElement, NavItem, OverflowMenu, OverflowMenuControl, OverflowMenuDropdownItem, OverflowMenuItem, PageSection, PageSectionVariants, Pagination, Select, SelectList, SelectOption, Text, TextContent, Title, Toolbar, ToolbarContent, ToolbarFilter, ToolbarItem } from '@patternfly/react-core';
 import { data } from './ProjectData.jsx';
 import { EllipsisVIcon, EyeIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
+import { NavLink } from 'react-router-dom';
 
 const Dashboard: React.FunctionComponent = () => {
   const totalItemCount = data.length;
@@ -187,7 +188,9 @@ const Dashboard: React.FunctionComponent = () => {
                   />
                   <EmptyStateFooter>
                     <EmptyStateActions>
-                      <Button variant="link">Add card</Button>
+                      <NavLink to="/template">
+                        <Button variant="link">Add card</Button>
+                      </NavLink>
                     </EmptyStateActions>
                   </EmptyStateFooter>
                 </EmptyState>
@@ -268,6 +271,6 @@ const Dashboard: React.FunctionComponent = () => {
         </PageSection>
     </React.Fragment>
   );
-                }
+}
 
 export { Dashboard };

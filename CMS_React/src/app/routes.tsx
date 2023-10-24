@@ -6,6 +6,9 @@ import { GeneralSettings } from '@app/Settings/General/GeneralSettings';
 import { ProfileSettings } from '@app/Settings/Profile/ProfileSettings';
 import { NotFound } from '@app/NotFound/NotFound';
 import { useDocumentTitle } from '@app/utils/useDocumentTitle';
+import { Template } from './Pages/Template';
+import { TemplateProgress } from './Pages/TemplateProgress';
+import { Login } from './Pages/Login';
 
 let routeFocusTimer: number;
 export interface IAppRoute {
@@ -32,7 +35,7 @@ const routes: AppRouteConfig[] = [
     exact: true,
     label: 'Dashboard',
     path: '/',
-    title: 'PatternFly Seed | Main Dashboard',
+    title: 'Templates Dashboard',
   },
   {
     component: Support,
@@ -40,6 +43,21 @@ const routes: AppRouteConfig[] = [
     label: 'Support',
     path: '/support',
     title: 'PatternFly Seed | Support Page',
+  },
+  {
+    component: Template,
+    path: '/template',
+    title: 'Create Template Page',
+  },
+  {
+    component: TemplateProgress,
+    path: '/submit',
+    title: 'Submit Template Page',
+  },
+  {
+    component: Login,
+    path: '/login',
+    title: 'Login',
   },
   {
     label: 'Settings',
