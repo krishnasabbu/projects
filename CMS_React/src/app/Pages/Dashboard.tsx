@@ -1,19 +1,25 @@
 import * as React from 'react';
-import { Badge, Bullseye, Button, Card, CardBody, CardHeader, CardTitle, Dropdown, DropdownItem, DropdownList, EmptyState, EmptyStateActions, EmptyStateFooter, EmptyStateHeader, EmptyStateIcon, EmptyStateVariant, Gallery, MenuToggle, MenuToggleCheckbox, MenuToggleElement, NavItem, OverflowMenu, OverflowMenuControl, OverflowMenuDropdownItem, OverflowMenuItem, PageSection, PageSectionVariants, Pagination, Select, SelectList, SelectOption, Text, TextContent, Title, Toolbar, ToolbarContent, ToolbarFilter, ToolbarItem } from '@patternfly/react-core';
-import { data } from './ProjectData.jsx';
-import { EllipsisVIcon, EyeIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
-import { NavLink } from 'react-router-dom';
+import { useTemplateContext } from '@app/context/TemplateProvider';
+import { Badge, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, CardTitle, Dropdown, DropdownItem, DropdownList, EmptyState, EmptyStateActions, EmptyStateFooter, EmptyStateHeader, EmptyStateIcon, EmptyStateVariant, Gallery, MenuToggle, MenuToggleElement, PageSection, PageSectionVariants, Pagination, Select, SelectList, SelectOption, Text, TextContent, Toolbar, ToolbarContent, ToolbarFilter, ToolbarItem } from '@patternfly/react-core';
+import { ArrowRightIcon, EllipsisVIcon, EyeIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
+import { NavLink, useHistory } from 'react-router-dom';
+import { APIService } from '@app/utils/APIService';
+import { Templates } from '@app/utils/type';
 
-const Dashboard: React.FunctionComponent = () => {
-  const totalItemCount = data.length;
+export const Dashboard: React.FunctionComponent = () => {
 
-  const [cardData, setCardData] = React.useState(data);
+  const {templateList, updateTemplates, updateTemplate} = useTemplateContext();
+  const [totalItemCount, setTotalItemCount] = React.useState(0);
+
+  const [cardData, setCardData] = React.useState<Templates>([]);
   const [selectedItems, setSelectedItems] = React.useState<number[]>([]);
   const [isLowerToolbarDropdownOpen, setIsLowerToolbarDropdownOpen] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(10);
   const [filters, setFilters] = React.useState<Record<string, string[]>>({ products: [] });
   const [state, setState] = React.useState({});
+
+  const history = useHistory();
 
   interface ProductType {
     id: number;
@@ -56,17 +62,23 @@ const Dashboard: React.FunctionComponent = () => {
   const onNameSelect = (event: any, selection = '') => {
     const checked = event.target.checked;
     const prevSelections = filters.products;
-
-    console.log("checked === "+event.target.checked);
-    console.log("selection === "+selection);
-    console.log("selection === "+JSON.stringify(prevSelections));
-
     setFilters({
       ...filters,
       products: checked ? [...prevSelections, selection] : prevSelections.filter(
         (value) => value !== selection)
     });
   };
+
+   React.useEffect(() => {
+     const fetchTemplates = async () => {
+       const data = await APIService.get<Templates>('http://localhost:8081/response');
+       console.log(data);
+       updateTemplates(data);
+       setTotalItemCount(data.length);
+       setCardData(data);
+     };
+     fetchTemplates();
+   }, []);
 
   const onDelete = (type = '', _id = '') => {
     if (type) {
@@ -125,7 +137,7 @@ const Dashboard: React.FunctionComponent = () => {
 
     return (
       <ToolbarFilter
-        categoryName="Products"
+        categoryName="Templates"
         chips={filters.products}
         deleteChip={(type, id) => onDelete(type as string, id as string)}
       >
@@ -160,17 +172,26 @@ const Dashboard: React.FunctionComponent = () => {
     </React.Fragment>
   );
 
+  const viewDetails = (id: string) => {
+    const foundObject = templateList.find(obj => obj.id === id);
+    console.log("foundObject ===== "+foundObject);
+    updateTemplate(foundObject);
+    history.push("/template");
+  }
+
   const filtered =
     filters.products.length > 0
-      ? data.filter((card: { status: string }) => filters.products.length === 0 || filters.products.includes(card.status))
+      ? templateList.filter((card: { status: string }) => filters.products.length === 0 || filters.products.includes(card.status))
       : cardData.slice((page - 1) * perPage, perPage === 1 ? page * perPage : page * perPage - 1);
+
+  console.log("filtered : "+filtered);
 
   return (
     <React.Fragment>
         <PageSection variant={PageSectionVariants.light}>
           <TextContent>
-            <Text component="h1">Projects</Text>
-            <Text component="p">This is a demo that showcases PatternFly cards.</Text>
+            <Text component="h1">Tempaltes</Text>
+            <Text component="p">Display list of templates</Text>
           </TextContent>
           <Toolbar id="toolbar-group-types" clearAllFilters={onDelete}>
             <ToolbarContent>{toolbarItems}</ToolbarContent>
@@ -183,7 +204,7 @@ const Dashboard: React.FunctionComponent = () => {
                 <EmptyState variant={EmptyStateVariant.xs}>
                   <EmptyStateHeader
                     headingLevel="h2"
-                    titleText="Add a new card to your page"
+                    titleText="Add a new Template"
                     icon={<EmptyStateIcon icon={PlusCircleIcon} />}
                   />
                   <EmptyStateFooter>
@@ -196,8 +217,8 @@ const Dashboard: React.FunctionComponent = () => {
                 </EmptyState>
               </Bullseye>
             </Card>
-            {filtered.map((product, key) => (
-              <Card isCompact isClickable isSelectable key={product.name} id={product.name.replace(/ /g, '-')}>
+            {filtered.map((template, key) => (
+              <Card isCompact isClickable isSelectable key={template.name} id={template.name.replace(/ /g, '-')}>
                 <CardHeader
                   actions={{
                     actions: (
@@ -208,7 +229,7 @@ const Dashboard: React.FunctionComponent = () => {
                           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                             <MenuToggle
                               ref={toggleRef}
-                              aria-label={`${product.name} actions`}
+                              aria-label={`${template.name} actions`}
                               variant="plain"
                               onClick={(e) => {
                                 onCardKebabDropdownToggle(e, key.toString());
@@ -224,16 +245,16 @@ const Dashboard: React.FunctionComponent = () => {
                             <DropdownItem
                               key="trash"
                               onClick={() => {
-                                deleteItem(product);
+                                deleteItem(template);
                               }}
                             >
                               <EyeIcon />
-                              View
+                              Edit
                             </DropdownItem>
                             <DropdownItem
                               key="trash"
                               onClick={() => {
-                                deleteItem(product);
+                                deleteItem(template);
                               }}
                             >
                               <TrashIcon />
@@ -246,10 +267,15 @@ const Dashboard: React.FunctionComponent = () => {
                     )
                   }}
                 >
-                  {/* <img src={icons[product.icon]} alt={`${product.name} icon`} style={{ maxWidth: '60px' }} /> */}
+                  {/* <img src={pfIcon} style={{ maxWidth: '60px' }} /> */}
                 </CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-                <CardBody>{product.description}</CardBody>
+                <CardTitle>{template.name}</CardTitle>
+                <CardBody>{template.description}</CardBody>
+                <CardFooter>
+                  <Button variant="link" onClick={() => viewDetails(template.id)}>
+                    View Details
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </Gallery>
@@ -272,5 +298,3 @@ const Dashboard: React.FunctionComponent = () => {
     </React.Fragment>
   );
 }
-
-export { Dashboard };

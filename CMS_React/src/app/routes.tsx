@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch, useLocation } from 'react-router-dom';
-import { Dashboard } from '@app/Dashboard/Dashboard';
+import { Dashboard } from '@app/Pages/Dashboard';
 import { Support } from '@app/Support/Support';
 import { GeneralSettings } from '@app/Settings/General/GeneralSettings';
 import { ProfileSettings } from '@app/Settings/Profile/ProfileSettings';
@@ -9,6 +9,7 @@ import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 import { Template } from './Pages/Template';
 import { TemplateProgress } from './Pages/TemplateProgress';
 import { Login } from './Pages/Login';
+import { Members } from './Pages/Members';
 
 let routeFocusTimer: number;
 export interface IAppRoute {
@@ -38,11 +39,11 @@ const routes: AppRouteConfig[] = [
     title: 'Templates Dashboard',
   },
   {
-    component: Support,
+    component: Members,
     exact: true,
-    label: 'Support',
-    path: '/support',
-    title: 'PatternFly Seed | Support Page',
+    label: 'Members',
+    path: '/members',
+    title: 'Members Dashboard',
   },
   {
     component: Template,
@@ -58,25 +59,6 @@ const routes: AppRouteConfig[] = [
     component: Login,
     path: '/login',
     title: 'Login',
-  },
-  {
-    label: 'Settings',
-    routes: [
-      {
-        component: GeneralSettings,
-        exact: true,
-        label: 'General',
-        path: '/settings/general',
-        title: 'PatternFly Seed | General Settings',
-      },
-      {
-        component: ProfileSettings,
-        exact: true,
-        label: 'Profile',
-        path: '/settings/profile',
-        title: 'PatternFly Seed | Profile Settings',
-      },
-    ],
   },
 ];
 

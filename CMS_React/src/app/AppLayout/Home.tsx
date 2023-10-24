@@ -30,7 +30,7 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import { IAppRoute, IAppRouteGroup, routes } from '@app/routes';
-import logo from '@app/bgimages/Patternfly-Logo.svg';
+import imgAvatar from '@patternfly/react-core/src/components/assets/avatarImg.svg';
 import { BarsIcon, BellIcon, CogIcon, EllipsisVIcon, HelpIcon, QuestionCircleIcon } from '@patternfly/react-icons';
 
 interface HomeLayout {
@@ -97,7 +97,7 @@ const Home: React.FunctionComponent<HomeLayout> = ({ children }) => {
       </MastheadToggle>
       <MastheadMain>
         <MastheadBrand>
-          <Brand src={logo} alt="Patterfly Logo" heights={{ default: '36px' }} />
+          {/* <Brand alt="Patterfly Logo" heights={{ default: '36px' }} /> */}
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>
@@ -184,10 +184,10 @@ const Home: React.FunctionComponent<HomeLayout> = ({ children }) => {
                     ref={toggleRef}
                     isExpanded={isDropdownOpen}
                     onClick={onDropdownToggle}
-                    icon={<Avatar alt="" />}
+                    icon={<Avatar src={imgAvatar} alt="" />}
                     isFullHeight
                   >
-                    Ned Username
+                    Krishna Sabbu
                   </MenuToggle>
                 )}
               >

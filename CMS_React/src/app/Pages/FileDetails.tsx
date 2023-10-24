@@ -55,7 +55,7 @@ export const FileDetails: React.FunctionComponent = () => {
         <PageSection variant={PageSectionVariants.light}>
           <TextContent>
               <Text component="h3">Uplaod Functional Requirement Document (FRD)</Text>
-              <Text component="p">This is a demo that showcases PatternFly cards.</Text>
+              <Text component="p">upload FRD doc and preview the file</Text>
           </TextContent>
         </PageSection>
         <PageSection variant={PageSectionVariants.light}>

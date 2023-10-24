@@ -63,7 +63,7 @@ export const Template: React.FunctionComponent = () => {
             <PageSection variant={PageSectionVariants.light}>
                 <TextContent>
                     <Text component="h1">Create Template</Text>
-                    <Text component="p">This is a demo that showcases PatternFly cards.</Text>
+                    <Text component="p">Fill the template details</Text>
                 </TextContent>
             </PageSection>
             <PageSection>

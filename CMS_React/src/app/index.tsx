@@ -6,17 +6,20 @@ import { AppRoutes } from '@app/routes';
 import '@app/app.css';
 import TemplateProvider from './context/TemplateProvider';
 import AuthProvider from './context/AuthProvider';
+import LogsProvider from './context/LogsContext';
 
 
 const App: React.FunctionComponent = () => (
   <Router>
-    <AuthProvider>
-      <TemplateProvider>
-        <AppLayout>
-          <AppRoutes />
-        </AppLayout>
-      </TemplateProvider>
-    </AuthProvider>
+    <TemplateProvider>
+      <AuthProvider>
+        <LogsProvider>
+          <AppLayout>
+            <AppRoutes />
+          </AppLayout>
+        </LogsProvider>
+      </AuthProvider>
+    </TemplateProvider>
   </Router>
 );
 

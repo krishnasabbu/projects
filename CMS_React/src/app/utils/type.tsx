@@ -5,6 +5,7 @@ export interface Template {
     version: string;
     filename: string;
     content: string;
+    status: string;
     dynamicVariables: DynamicVariables
 }
 
@@ -15,4 +16,5 @@ export interface DynamicVariable {
     formula:string;
 }
 
+export type Templates = Template[];
 export type DynamicVariables=DynamicVariable[];

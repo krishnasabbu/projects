@@ -11,7 +11,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
 
   const { token } = useAuth();
 
-  if(!token) {
+  if(token) {
     return <Login  />
   }
 

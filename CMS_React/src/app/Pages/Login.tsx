@@ -51,7 +51,7 @@ export const Login: React.FunctionComponent = () => {
   const socialMediaLoginContent = (
     <React.Fragment>
       <LoginMainFooterLinksItem
-        href="https://www.patternfly.org/"
+        href=""
         linkComponentProps={{ 'aria-label': 'Login with Google' }}
       >
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -59,7 +59,7 @@ export const Login: React.FunctionComponent = () => {
         </svg>
       </LoginMainFooterLinksItem>
       <LoginMainFooterLinksItem
-        href="https://www.patternfly.org/"
+        href=""
         linkComponentProps={{ 'aria-label': 'Login with Github' }}
       >
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
@@ -67,7 +67,7 @@ export const Login: React.FunctionComponent = () => {
         </svg>
       </LoginMainFooterLinksItem>
       <LoginMainFooterLinksItem
-        href="https://www.patternfly.org/"
+        href=""
         linkComponentProps={{ 'aria-label': 'Login with Dropbox' }}
       >
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528 512">
@@ -75,7 +75,7 @@ export const Login: React.FunctionComponent = () => {
         </svg>
       </LoginMainFooterLinksItem>
       <LoginMainFooterLinksItem
-        href="https://www.patternfly.org/"
+        href=""
         linkComponentProps={{ 'aria-label': 'Login with Facebook' }}
       >
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -83,7 +83,7 @@ export const Login: React.FunctionComponent = () => {
         </svg>
       </LoginMainFooterLinksItem>
       <LoginMainFooterLinksItem
-        href="https://www.patternfly.org/"
+        href=""
         linkComponentProps={{ 'aria-label': 'Login with Gitlab' }}
       >
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -95,26 +95,26 @@ export const Login: React.FunctionComponent = () => {
 
   const signUpForAccountMessage = (
     <LoginMainFooterBandItem>
-      Need an account? <a href="https://www.patternfly.org/">Sign up.</a>
+      Need an account? <a href="">Sign up.</a>
     </LoginMainFooterBandItem>
   );
 
   const forgotCredentials = (
     <LoginMainFooterBandItem>
-      <a href="https://www.patternfly.org/">Forgot username or password?</a>
+      <a href="">Forgot username or password?</a>
     </LoginMainFooterBandItem>
   );
 
   const listItem = (
     <React.Fragment>
       <ListItem>
-        <LoginFooterItem href="https://www.patternfly.org/">Terms of Use </LoginFooterItem>
+        <LoginFooterItem href="">Terms of Use </LoginFooterItem>
       </ListItem>
       <ListItem>
-        <LoginFooterItem href="https://www.patternfly.org/">Help</LoginFooterItem>
+        <LoginFooterItem href="">Help</LoginFooterItem>
       </ListItem>
       <ListItem>
-        <LoginFooterItem href="https://www.patternfly.org/">Privacy Policy</LoginFooterItem>
+        <LoginFooterItem href="">Privacy Policy</LoginFooterItem>
       </ListItem>
     </React.Fragment>
   );
@@ -144,7 +144,6 @@ export const Login: React.FunctionComponent = () => {
   return (
     <LoginPage
       footerListVariants={ListVariant.inline}
-      brandImgAlt="PatternFly logo"
       backgroundImgSrc="/assets/images/pfbg-icon.svg"
       footerListItems={listItem}
       textContent="This is placeholder text only. Use this area to place any information or introductory message about your application that may be relevant to users."

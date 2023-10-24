@@ -76,7 +76,7 @@ export const TemplateConfig: React.FC = () => {
             <PageSection variant={PageSectionVariants.light}>
                 <TextContent>
                     <Text component="h3">Dynamic Variables Configuration</Text>
-                    <Text component="p">Drag and Drop the formatter to the corresponding column</Text>
+                    <Text component="p">Drag and Drop the formatter to the corresponding Dynamic Variable</Text>
                 </TextContent>
             </PageSection>
             <PageSection variant={PageSectionVariants.light}>

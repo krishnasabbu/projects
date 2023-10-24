@@ -1,5 +1,5 @@
-import { DynamicVariables } from "@app/utils/type";
-import React, { PropsWithChildren } from "react";
+import { DynamicVariables, Template, Templates } from "@app/utils/type";
+import React from "react";
 
 interface TemplateContextData {
     id: string;
@@ -10,6 +10,7 @@ interface TemplateContextData {
     content: string;
     file: File | null;
     dynamicVariables: DynamicVariables;
+    templateList: Templates;
     updateId: (newId: string) => void;
     updateName: (newName: string) => void;
     updateDescription: (newDescription: string) => void;
@@ -19,6 +20,8 @@ interface TemplateContextData {
     setFile: (newFile: File | null) => void;
     setDynamicVariables: (newDynamicVariables: DynamicVariables) => void;
     createTemplate: () => void;
+    updateTemplates: (newTemplates: Templates) => void;
+    updateTemplate: (newTemplate: Template) => void;
 }
 
 const TemplateContext = React.createContext<TemplateContextData | undefined>(undefined);
@@ -37,6 +40,7 @@ export default function TemplateProvider ({ children}) {
         { id: '2', name: 'two', formatter: 'Drop Zone', formula: '' },
         { id: '3', name: 'three', formatter: 'Drop Zone', formula: ''}
     ]);
+    const [templateList, setTemplateList] = React.useState<Templates | []>([]);
 
     const updateId = (newId : string) => {
         console.log(newId);
@@ -64,7 +68,22 @@ export default function TemplateProvider ({ children}) {
     }
 
     const createTemplate = () => {
-        
+
+    }
+
+    const updateTemplates = (templates: Templates) => {
+        console.log(JSON.stringify(templates))
+        setTemplateList(templates);
+        console.log("templateList === "+templateList.length);
+    }
+
+    const updateTemplate = (template: Template) => {
+        setId(template.id);
+        setName(template.name);
+        setDescription(template.description);
+        setVersion(template.version);
+        setFileName(template.filename);
+        setDynamicVariables(template.dynamicVariables);
     }
 
     const contextValue: TemplateContextData = {
@@ -76,6 +95,7 @@ export default function TemplateProvider ({ children}) {
         content,
         file,
         dynamicVariables,
+        templateList,
         updateId,
         updateName,
         updateDescription,
@@ -84,7 +104,9 @@ export default function TemplateProvider ({ children}) {
         updateContent,
         setFile,
         setDynamicVariables,
-        createTemplate
+        createTemplate,
+        updateTemplates,
+        updateTemplate
     };
 
     return(
