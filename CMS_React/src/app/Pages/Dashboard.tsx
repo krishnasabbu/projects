@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTemplateContext } from '@app/context/TemplateProvider';
-import { Badge, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, CardTitle, Dropdown, DropdownItem, DropdownList, EmptyState, EmptyStateActions, EmptyStateFooter, EmptyStateHeader, EmptyStateIcon, EmptyStateVariant, Gallery, MenuToggle, MenuToggleElement, PageSection, PageSectionVariants, Pagination, Select, SelectList, SelectOption, Text, TextContent, Toolbar, ToolbarContent, ToolbarFilter, ToolbarItem } from '@patternfly/react-core';
+import { Badge, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, CardTitle, Dropdown, DropdownItem, DropdownList, EmptyState, EmptyStateActions, EmptyStateFooter, EmptyStateHeader, EmptyStateIcon, EmptyStateVariant, Gallery, MenuToggle, MenuToggleElement, PageSection, PageSectionVariants, Pagination, SearchInput, Select, SelectList, SelectOption, Text, TextContent, Toolbar, ToolbarContent, ToolbarFilter, ToolbarItem } from '@patternfly/react-core';
 import { ArrowRightIcon, EllipsisVIcon, EyeIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
 import { NavLink, useHistory } from 'react-router-dom';
 import { APIService } from '@app/utils/APIService';
@@ -20,6 +20,23 @@ export const Dashboard: React.FunctionComponent = () => {
   const [state, setState] = React.useState({});
 
   const history = useHistory();
+
+  const [value, setValue] = React.useState('');
+
+  const onChange = (value: string) => {
+    setValue(value);
+    console.log("filtered === "+filtered);
+    setCardData(searchObjects(value));
+  };
+
+  const searchObjects = (query: string) => {
+    return templateList.filter(
+      obj =>
+        obj.id.toString().toLowerCase().includes(query.toLowerCase()) ||
+        obj.name.toLowerCase().includes(query.toLowerCase()) ||
+        obj.description.toLowerCase().includes(query.toLowerCase())
+    );
+  };
 
   interface ProductType {
     id: number;
@@ -67,6 +84,7 @@ export const Dashboard: React.FunctionComponent = () => {
       products: checked ? [...prevSelections, selection] : prevSelections.filter(
         (value) => value !== selection)
     });
+    console.log("products ========== "+filters.products.length);
   };
 
    React.useEffect(() => {
@@ -166,6 +184,14 @@ export const Dashboard: React.FunctionComponent = () => {
   const toolbarItems = (
     <React.Fragment>
       <ToolbarItem>{buildFilterDropdown()}</ToolbarItem>
+      <ToolbarItem>
+          <SearchInput
+              placeholder="Search by text"
+              value={value}
+              onChange={(_event, value) => onChange(value)}
+              onClear={() => onChange('')}
+          />
+      </ToolbarItem>
       <ToolbarItem variant="pagination" align={{ default: 'alignRight' }}>
         {renderPagination()}
       </ToolbarItem>
@@ -210,7 +236,7 @@ export const Dashboard: React.FunctionComponent = () => {
                   <EmptyStateFooter>
                     <EmptyStateActions>
                       <NavLink to="/template">
-                        <Button variant="link">Add card</Button>
+                        <Button variant="link">Add Template</Button>
                       </NavLink>
                     </EmptyStateActions>
                   </EmptyStateFooter>
@@ -268,13 +294,20 @@ export const Dashboard: React.FunctionComponent = () => {
                   }}
                 >
                   {/* <img src={pfIcon} style={{ maxWidth: '60px' }} /> */}
+                  <TextContent>
+                    <Text component="h2">{ template.id }</Text>
+                  </TextContent>
                 </CardHeader>
                 <CardTitle>{template.name}</CardTitle>
                 <CardBody>{template.description}</CardBody>
                 <CardFooter>
-                  <Button variant="link" onClick={() => viewDetails(template.id)}>
-                    View Details
-                  </Button>
+                  <TextContent>
+                      <Button variant="link" onClick={() => viewDetails(template.id)}>
+                      <Text component="h6">
+                        View Details &nbsp; <ArrowRightIcon></ArrowRightIcon>
+                        </Text>
+                      </Button>
+                  </TextContent>
                 </CardFooter>
               </Card>
             ))}
