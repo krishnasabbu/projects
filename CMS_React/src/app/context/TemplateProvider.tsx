@@ -1,4 +1,4 @@
-import { DynamicVariables, Template, Templates } from "@app/utils/type";
+import { DynamicVariable, DynamicVariables, Template, Templates, Users } from "@app/utils/type";
 import React from "react";
 
 interface TemplateContextData {
@@ -10,7 +10,9 @@ interface TemplateContextData {
     content: string;
     file: File | null;
     dynamicVariables: DynamicVariables;
+    formDynamicVariables: DynamicVariables;
     templateList: Templates;
+    users: Users;
     updateId: (newId: string) => void;
     updateName: (newName: string) => void;
     updateDescription: (newDescription: string) => void;
@@ -19,9 +21,11 @@ interface TemplateContextData {
     updateContent: (newContent: string) => void;
     setFile: (newFile: File | null) => void;
     setDynamicVariables: (newDynamicVariables: DynamicVariables) => void;
+    setFormDynamicVariables: (newDynamicVariables: DynamicVariables) => void;
     createTemplate: () => void;
     updateTemplates: (newTemplates: Templates) => void;
     updateTemplate: (newTemplate: Template) => void;
+    setUsers: (newUsers: Users) => void;
 }
 
 const TemplateContext = React.createContext<TemplateContextData | undefined>(undefined);
@@ -41,6 +45,12 @@ export default function TemplateProvider ({ children}) {
         { id: '3', name: 'three', formatter: 'Drop Zone', formula: ''}
     ]);
     const [templateList, setTemplateList] = React.useState<Templates | []>([]);
+    const [formDynamicVariables, setFormDynamicVariables] = React.useState<DynamicVariables>([]);
+    const [users, setUsers] = React.useState<Users | []>([
+        { id: '1', name: 'one', userName: 'Drop Zone', email: '' },
+        { id: '2', name: 'two', userName: 'Drop Zone', email: '' },
+        { id: '3', name: 'three', userName: 'Drop Zone', email: ''}
+    ]);
 
     const updateId = (newId : string) => {
         console.log(newId);
@@ -95,7 +105,9 @@ export default function TemplateProvider ({ children}) {
         content,
         file,
         dynamicVariables,
+        formDynamicVariables,
         templateList,
+        users,
         updateId,
         updateName,
         updateDescription,
@@ -104,9 +116,11 @@ export default function TemplateProvider ({ children}) {
         updateContent,
         setFile,
         setDynamicVariables,
+        setFormDynamicVariables,
         createTemplate,
         updateTemplates,
-        updateTemplate
+        updateTemplate,
+        setUsers,
     };
 
     return(
