@@ -1,0 +1,18 @@
+/* AlertComponent.css */
+.alert-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000; /* Adjust the z-index as needed */
+    width: 300px; /* Adjust the width as needed */
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  .alert-container.hidden {
+    opacity: 0;
+  }
+  
+  .alert-container.visible {
+    opacity: 1;
+  }
+  
