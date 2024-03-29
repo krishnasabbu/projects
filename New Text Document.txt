@@ -1,0 +1,23 @@
+import fitz
+
+def print_pdf_content(pdf_path):
+    doc = fitz.open(pdf_path)
+    for page_number in range(len(doc)):
+        page = doc.load_page(page_number)
+        print("Page:", page_number + 1)
+        for block in page.get_text("dict")["blocks"]:
+            if block["type"] == 0:  # Text block
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        print(span["text"], end="")
+                    print()  # Newline after each line
+            elif block["type"] == 5:  # Table block
+                for row in block["lines"]:
+                    for cell in row["spans"]:
+                        print(cell["text"], end="\t")  # Tab separator for cells
+                    print()  # Newline after each row
+        print("\n")  # Newline after each page
+
+# Example usage:
+pdf_path = 'example.pdf'
+print_pdf_content(pdf_path)
