@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import warnings
+from streamlit_modal import Modal
+
+modal = Modal(key="Mapping Key", title="Map Primary Keys")
 
 warnings.filterwarnings('ignore')
 
@@ -10,23 +13,75 @@ st.set_page_config(page_title="Excel Visualize!!!", page_icon=":bar_chart:", lay
 st.title(" :bar_chart: Sample Excel Store")
 st.markdown('<style>div.block-container{padding-top:1rem;}</style>', unsafe_allow_html=True)
 
-
-# Function to process uploaded files and merge them into a single DataFrame
-def merge_uploaded_files(uploaded_files):
-    dfs = []
-    for uploaded_file in uploaded_files:
-        df = pd.read_excel(uploaded_file)
-        dfs.append(df)
-    merged_df = pd.concat(dfs, ignore_index=True)
-    return merged_df
-
-
 # Upload Excel files
 uploaded_files = st.file_uploader("Upload Excel files", accept_multiple_files=True)
 
+if 'primary_key_df1' not in st.session_state:
+    st.session_state.primary_key_df1 = ''
+
+if 'primary_key_df2' not in st.session_state:
+    st.session_state.primary_key_df2 = ''
+
 if uploaded_files:
-    # Merge uploaded files
-    merged_df = merge_uploaded_files(uploaded_files)
+
+    dfs = [pd.read_excel(file) for file in uploaded_files]
+
+    if len(dfs) == 2:
+
+        col1, col2 = st.columns(2)
+        with col1:
+            # Display merged Excel Sheet
+            st.write("First Excel :", dfs[0])
+        with col2:
+            st.write("Second Excel:", dfs[1])
+
+        # Concatenate column names of both DataFrames
+        columns_df1 = dfs[0].columns.tolist()
+        columns_df2 = dfs[1].columns.tolist()
+
+        if len(st.session_state.primary_key_df1) != 0 and len(st.session_state.primary_key_df2) != 0:
+            merged_df = pd.merge(dfs[0], dfs[1], how='outer', left_on=st.session_state.primary_key_df1,
+                                 right_on=st.session_state.primary_key_df2)
+        else:
+            merged_df = dfs[0]
+
+        # Modal for configuration
+        with st.sidebar:
+
+            configuration = st.button('Mapping Configuration')
+
+            if configuration:
+                modal.open()
+
+            if modal.is_open():
+                with modal.container():
+                    # Modal for configuration
+                    with st.form(key='configuration_form'):
+                        st.write("Columns of first DataFrame:")
+                        st.write(columns_df1)
+
+                        st.write("Columns of second DataFrame:")
+                        st.write(columns_df2)
+
+                        st.subheader('Field Mapping Configuration')
+                        st.session_state.primary_key_df1 = st.selectbox("Select primary key for first DataFrame",
+                                                                        columns_df1)
+                        st.session_state.primary_key_df2 = st.selectbox("Select primary key for second DataFrame",
+                                                                        columns_df2)
+
+                        submitted = st.form_submit_button('Merge')
+
+                        if submitted:
+                            merged_df = pd.merge(dfs[0], dfs[1], how='outer', left_on=st.session_state.primary_key_df1,
+                                                 right_on=st.session_state.primary_key_df2)
+                            modal.close()
+                        else:
+                            merged_df = dfs[0]
+
+    else:
+        merged_df = dfs[0]
+        st.write("First Excel Sheet:")
+        st.write(merged_df)
 
     # Filter options
     st.sidebar.header("Filter Options")
@@ -51,16 +106,9 @@ if uploaded_files:
     # Hide selected columns from filtered DataFrame
     filtered_df = filtered_df.drop(columns=columns_to_hide, errors='ignore')
 
-    # Display Excel Sheet and Filtered DataFrame
-    col1, col2 = st.columns(2)
-    with col1:
-        # Display merged Excel Sheet
-        st.write("Merged Excel Data:", merged_df)
-    with col2:
-        # Display filtered and customized DataFrame
-        st.write("Filtered and Customized Excel Sheet:")
-        filtered_table = filtered_df.head(num_rows_to_display)
-        st.write(filtered_table)
+    st.write("Filtered and Customized Excel Sheet:")
+    filtered_table = filtered_df.head(num_rows_to_display)
+    st.write(filtered_table)
 
     col1, col2 = st.columns(2)
     with col1:
