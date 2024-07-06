@@ -1,0 +1,12 @@
+Flask
+Flask[async]
+gunicorn
+asyncio
+librosa
+numpy
+tensorflow
+werkzeug
+google-cloud-storage
+pydub
+joblib
+SpeechRecognition
