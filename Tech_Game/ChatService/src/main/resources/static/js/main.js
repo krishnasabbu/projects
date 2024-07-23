@@ -206,6 +206,14 @@ $(document).ready(function() {
         globalIntent = 'trained';
     });
 
+   $('#msg-input').keypress(function(event) {
+        if (event.which === 13) { // 13 is the Enter key
+            event.preventDefault();
+            console.log("Fired");
+            fireApiCall('false');
+        }
+    });
+
     $("#mic-btn").click(function(event) {
         event.preventDefault();
         console.log("Fired");
