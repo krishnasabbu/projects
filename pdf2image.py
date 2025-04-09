@@ -89,10 +89,14 @@ print("✅ PDF generated using pyppeteer!")
 import re
 
 def fix_top_styles(html):
-    # This finds inline style="..." blocks and adds position:absolute before top
+    # Match inline style attributes
     def replacer(match):
-        style = match.group(1)
-        updated = re.sub(r'(?<!position:\s*absolute;?)\btop\s*:', r'position:absolute;top:', style)
-        return f'style="{updated}"'
+        style_content = match.group(1)
+        if "top" in style_content and "position:absolute" not in style_content:
+            # Insert position:absolute before top:NNpx
+            updated = re.sub(r'\btop\s*:', r'position:absolute;top:', style_content)
+            return f'style="{updated}"'
+        return match.group(0)
 
     return re.sub(r'style="(.*?)"', replacer, html, flags=re.IGNORECASE | re.DOTALL)
+
