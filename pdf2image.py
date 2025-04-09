@@ -1,68 +1,87 @@
-from PIL import Image, ImageDraw, ImageFont
-from xhtml2pdf import pisa
-import base64
-from io import BytesIO
-import re
+import asyncio
+import os
+from pyppeteer import launch
 
-# Step 1: Convert HTML to plain formatted image
-def html_to_image(html: str, image_file="html_render.png"):
-    # Very basic tag parsing: supports <p>, <br>, <b>
-    html = html.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
-    paragraphs = re.findall(r"<p>(.*?)</p>", html, re.DOTALL)
-
-    # Font setup (use built-in fonts)
-    font = ImageFont.load_default()
-    width, height = 800, 1000
-    image = Image.new("RGB", (width, height), color="white")
-    draw = ImageDraw.Draw(image)
-
-    y = 20
-    for para in paragraphs:
-        # Bold handling
-        bold_parts = re.split(r"(<b>.*?</b>)", para)
-        for part in bold_parts:
-            if part.startswith("<b>") and part.endswith("</b>"):
-                text = part[3:-4]
-                draw.text((20, y), text, fill="black", font=font)  # optionally load bold font
-            else:
-                draw.text((20, y), part, fill="black", font=font)
-            y += 20
-
-        y += 10  # space between paragraphs
-
-    image.save(image_file)
-    return image_file
-
-# Step 2: Convert image to base64
-def image_to_base64(image_path):
-    with open(image_path, "rb") as f:
-        encoded = base64.b64encode(f.read()).decode("utf-8")
-    return encoded
-
-# Step 3: Simulated LLM response
-def call_custom_llm(image_b64):
-    translated_html = """
-    <p><b>Título traducido</b></p>
-    <p>Este es un párrafo traducido<br>con otra línea.</p>
-    """
-    return translated_html
-
-# Step 4: HTML to PDF
-def html_to_pdf(html_content, output_file="output_translated.pdf"):
-    with open(output_file, "wb") as result_file:
-        pisa.CreatePDF(html_content, dest=result_file)
-
-# === Run it all ===
-
-html_content = """
+# Step 1: Simulated input HTML
+original_html = """
 <p><b>Original Title</b></p>
 <p>This is the first paragraph<br>This is line 2</p>
 """
 
-image_path = html_to_image(html_content)
-b64_img = image_to_base64(image_path)
+# Step 2: Simulated LLM "translation"
+def call_custom_llm(html_b64_or_text):
+    return """
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+            }
+            p {
+                font-size: 14pt;
+            }
+            b {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <p><b>Page 1 Title</b></p>
+        <p>This is content for page 1.</p>
 
-translated_html = call_custom_llm(b64_img)
+        <div style="page-break-after: always;"></div>
 
-html_to_pdf(translated_html)
-print("✅ PDF created with translated content.")
+        <p><b>Page 2 Title</b></p>
+        <p>This is content for page 2.</p>
+
+        <div style="page-break-after: always;"></div>
+
+        <p><b>Page 3 Title</b></p>
+        <p>This is content for page 3.</p>
+    </body>
+    </html>
+    """
+
+# Step 3: Save HTML to a file (optional)
+def save_html_to_file(html_content, html_path="translated_output.html"):
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    return html_path
+
+# Step 4: Convert HTML to PDF using pyppeteer
+async def html_to_pdf_pyppeteer(html_content: str, pdf_output_path: str, use_file: bool = False, chrome_path: str = None):
+    launch_args = {"headless": True, "args": ["--no-sandbox"]}
+    if chrome_path:
+        launch_args["executablePath"] = chrome_path
+
+    browser = await launch(**launch_args)
+    page = await browser.newPage()
+
+    if use_file:
+        html_path = save_html_to_file(html_content)
+        abs_path = os.path.abspath(html_path)
+        await page.goto(f"file:///{abs_path}")
+    else:
+        await page.setContent(html_content)
+
+    await page.pdf({
+        'path': pdf_output_path,
+        'format': 'A4',
+        'margin': {'top': '40px', 'right': '40px', 'bottom': '40px', 'left': '40px'},
+        'printBackground': True
+    })
+
+    await browser.close()
+
+# === Run the full flow ===
+translated_html = call_custom_llm(original_html)
+
+use_file_rendering = False  # Change to True if you want to render from saved file
+custom_chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"  # Replace or set to None
+
+asyncio.get_event_loop().run_until_complete(
+    html_to_pdf_pyppeteer(translated_html, "translated_output.pdf", use_file_rendering, custom_chrome_path)
+)
+
+print("✅ PDF generated using pyppeteer!")
