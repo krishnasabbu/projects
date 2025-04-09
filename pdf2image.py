@@ -85,3 +85,14 @@ asyncio.get_event_loop().run_until_complete(
 )
 
 print("✅ PDF generated using pyppeteer!")
+
+import re
+
+def fix_top_styles(html):
+    # This finds inline style="..." blocks and adds position:absolute before top
+    def replacer(match):
+        style = match.group(1)
+        updated = re.sub(r'(?<!position:\s*absolute;?)\btop\s*:', r'position:absolute;top:', style)
+        return f'style="{updated}"'
+
+    return re.sub(r'style="(.*?)"', replacer, html, flags=re.IGNORECASE | re.DOTALL)
