@@ -26,8 +26,13 @@ The following context contains:
    - Highlight important methods that connect major components
    - Summarize the flow of data through the system
 
-3. When relevant, reconstruct a simplified **high-level architecture diagram in text** (or another Mermaid diagram if helpful).
+3. For each important method you identify, generate a **Java code snippet (method stub)**:
+   - Use correct method signature (name, parameters, return type, exceptions)
+   - Add inline comments summarizing the `logicSteps` and `calls`
+   - Do not invent business logic beyond what is in context, just reconstruct reasonable pseudocode
+
+4. When relevant, reconstruct a simplified **high-level architecture diagram in text** (or a new Mermaid diagram if helpful).
 
 ### Output
 Produce a clear, detailed, developer-oriented explanation of the class relationships and overall design.
-Avoid restating the raw JSON — instead, synthesize insights as if you are explaining the architecture to another developer who is onboarding to this project.
+For each method, include a Java method stub with comments.
